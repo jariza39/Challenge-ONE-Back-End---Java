@@ -1,0 +1,109 @@
+package currency_converter;
+import javax.swing.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+
+public class CurrencySettings {
+
+    private final Map<String, String> mapaMonedas = new HashMap<>();
+
+    public void ejecutar() {
+        inicializarMapaMonedas();
+        double valorMonedaOrigen = entradaDeDatos();
+        String opcionConversionCompleta = mostrarCuadroSeleccion();
+        String monedaOrigen = obtenerMonedaOrigen(opcionConversionCompleta);
+        String monedaDestino = obtenerMonedaDestino(opcionConversionCompleta);
+        double convertirMoneda = Converter.convertir(valorMonedaOrigen, monedaOrigen, monedaDestino);
+        String simobolo = obternerSimbolosMoneda(monedaDestino);
+        String destino = Arrays.stream(opcionConversionCompleta.split(" ")).skip(3).findFirst().orElse(null);
+        mostrarResultado(convertirMoneda,simobolo, destino);
+    }
+
+    private String obternerSimbolosMoneda(String moneda) {
+        switch (moneda) {
+            case "COP":
+            case "USD":
+                return "$";
+            case "EUR":
+                return "€";
+            case "GBP":
+                return "£";
+            case "JPY":
+                return "¥";
+            case "KRW":
+                return "₩";
+            default:
+                return "";
+        }
+    }
+    private void mostrarResultado(double valorConvertido,String simbolo, String monedaDestino) {
+        JOptionPane.showMessageDialog(null, "Tienes " + simbolo + valorConvertido +""+ monedaDestino, "Resultado",
+                JOptionPane.INFORMATION_MESSAGE, null);
+    }
+
+    private double entradaDeDatos() {
+        String entrada = solicitarEntrada();
+        return validarEntrada(entrada);
+    }
+
+    private String solicitarEntrada() {
+        return JOptionPane.showInputDialog(null, "Introduce el valor de la moneda que deseas convertir",
+                "Mensaje", JOptionPane.INFORMATION_MESSAGE);
+    }
+
+
+    private double validarEntrada(String entrada) {
+        while (true) {
+            if (entrada == null) {
+                // El usuario ha cancelado el cuadro de diálogo
+                // Puedes manejarlo adecuadamente, por ejemplo, devolviendo un valor predeterminado o lanzando una excepción
+                throw new RuntimeException("Entrada cancelada por el usuario");
+            }
+            try {
+                return Double.parseDouble(entrada);
+            } catch (NumberFormatException e) {
+                mostrarMensajeError();
+                entrada = solicitarEntrada();
+            }
+        }
+    }
+
+    private void mostrarMensajeError() {
+        JOptionPane.showMessageDialog(null, "Valor no válido, por favor ingrese un número válido.", "Error", JOptionPane.ERROR_MESSAGE, null);
+    }
+
+    private void inicializarMapaMonedas() {
+        mapaMonedas.put("Pesos", "COP");
+        mapaMonedas.put("Dólar", "USD");
+        mapaMonedas.put("Euros", "EUR");
+        mapaMonedas.put("Libras", "GBP");
+        mapaMonedas.put("Yen", "JPY");
+        mapaMonedas.put("Won", "KRW");
+    }
+
+    private String mostrarCuadroSeleccion() {
+        String[] opciones = { "De Pesos a Dólares", "De Pesos a Euros", "De Pesos a Libras",
+                "De Pesos a Yen", "De Pesos a Won", "De Dólares a Pesos", "De Euros a Pesos", "De Libras a Pesos",
+                "De Yen a Pesos", "De Won a Pesos"};
+        UIManager.put("OptionPane.okButtonText", "ok");
+        return (String) JOptionPane.showInputDialog(null,
+                "Elije la moneda a la que deseas convertir tu dinero", "Monedas", JOptionPane.PLAIN_MESSAGE,
+                null, opciones, opciones[0]);
+    }
+
+    private String obtenerMoneda(String opcionConversionCompleta, int indice) {
+        String[] palabras = opcionConversionCompleta.split(" ");
+        String moneda = palabras[indice];
+        return mapaMonedas.get(moneda);
+    }
+
+    public String obtenerMonedaOrigen(String opcionConversionCompleta) {
+        return obtenerMoneda(opcionConversionCompleta, 1);
+    }
+
+    public String obtenerMonedaDestino(String opcionConversionCompleta) {
+        return obtenerMoneda(opcionConversionCompleta, 3);
+    }
+
+}
