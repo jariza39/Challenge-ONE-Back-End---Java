@@ -7,7 +7,6 @@ import converter_settings.SelectionOptions;
 import currency_converter.CurrencyConverter;
 import java.util.ArrayList;
 import java.util.List;
-import javax.swing.JOptionPane;
 import weight_converter.WeightConverter;
 
 public class Main {
@@ -47,10 +46,10 @@ public class Main {
                     throw new IllegalStateException("Unexpected value: " + opcionConversion);
             }
 
-            continuar = (confirm("¿Desea continuar?") == JOptionPane.YES_OPTION);
+            continuar = (confirm("¿Desea continuar?"));
         } while (continuar);
 
-        JOptionPane.showMessageDialog(null, "Programa Finalizado", "Mensaje", JOptionPane.INFORMATION_MESSAGE);
+        message("Programa Finalizado");
     }
 
 
@@ -58,8 +57,11 @@ public class Main {
         return SelectionOptions.getdata(values, message);
     }
 
-
-    public static int confirm( String message) {
+    public static boolean confirm( String message) {
         return SelectionOptions.confirm( message);
+    }
+
+    public static void message( String message) {
+         SelectionOptions.message( message);
     }
 }
