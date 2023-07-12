@@ -32,20 +32,21 @@ public class Main {
                 System.exit(0);
             }
             switch (opcionConversion) {
-                case "Conversor de Moneda" -> {
+                case "Conversor de Moneda":
                     var selection = selectOptions(CURRENCYS, MESSAGE);
                     values.add(CurrencyConverter.getSymbolToCurrency(selection));
                     values.add(CurrencyConverter.convert(valueToConvert, selection));
                     values.add(CurrencyConverter.getToCurrency(selection));
                     Output.showResult(values);
-                }
-                case "Conversor de Peso" -> {
+                    break;
+                case "Conversor de Peso":
                     var selectionWeight = selectOptions(WEIGHTS, MESSAGE);
                     values.add(String.valueOf(WeightConverter.convert(valueToConvert, selectionWeight)));
                     values.add(CurrencyConverter.getToCurrency(selectionWeight));
                     Output.showResult(values);
-                }
-                default -> throw new IllegalStateException("Unexpected value: " + opcionConversion);
+                    break;
+                default:
+                    throw new IllegalStateException("Unexpected value: " + opcionConversion);
             }
             int opcion = JOptionPane.showConfirmDialog(null, "¿Desea continuar?",
                 "Select an Option", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null);
