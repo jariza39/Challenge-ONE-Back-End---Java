@@ -1,6 +1,7 @@
 package weight_converter;
 
 public class WeightMethod {
+
     public static final String[] WEIGHTS = {"de kilogramos a libras", "de kilogramos a onza", 
         "de kilogramos a gramos", "de kilogramos a miligramos", "de kilogramos a toneladas", 
         "de kilogramos a stone", "de libras a kilogramos", "de libras a onzas", 

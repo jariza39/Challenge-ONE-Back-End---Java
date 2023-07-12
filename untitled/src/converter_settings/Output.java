@@ -1,13 +1,15 @@
 package converter_settings;
 
+import java.util.List;
+import java.util.stream.Collectors;
 import javax.swing.*;
 
 public class Output {
-    public static void showResult(String convertedValue,String simbol, String destination) {
-        JOptionPane.showMessageDialog(null, "Tienes "+ simbol +" "+ convertedValue +" "+ destination);
-    }
 
-    public static void showResult(double convertedValue, String simbol) {
-        JOptionPane.showMessageDialog(null, "Tienes "+ convertedValue+ " "+simbol);
+    public static void showResult(List<String> values) {
+        JOptionPane.showMessageDialog(null, "Tienes".concat(values
+            .stream()
+            .map(s -> " ".concat(s))
+            .collect(Collectors.joining())));
     }
 }

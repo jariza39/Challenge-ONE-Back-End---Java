@@ -1,64 +1,67 @@
-import converter_settings.*;
-import currency_converter.CurrencyConverter;
-import static currency_converter.CurrencySymbols.*;
 import static currency_converter.CurrencyMethod.CURRENCYS;
 import static weight_converter.WeightMethod.WEIGHTS;
-import weight_converter.WeightConverter;
 
-import javax.swing.*;
-import java.util.Arrays;
+import converter_settings.Input;
+import converter_settings.Output;
+import converter_settings.SelectionOptions;
+import currency_converter.CurrencyConverter;
+import java.util.ArrayList;
+import java.util.List;
+import weight_converter.WeightConverter;
 
 public class Main {
 
-  public static void main(String[] args) {
-    boolean continuar;
+    public static final String MESSAGE = "Seleccione la unidad a convertir";
+    public static final String[] opciones = {"Conversor de Moneda", "Conversor de Peso"};
 
-    do {
-      String[] opciones = { "Conversor de Moneda", "Conversor de Peso" };
-      String opcionConversion = (String) JOptionPane.showInputDialog(null,
-          "Seleccione una opción de conversión", "Menu", JOptionPane.PLAIN_MESSAGE,
-          null, opciones, opciones[0]);
+    public static void main(String[] args) {
+        boolean continuar;
 
-      switch (opcionConversion) {
+        do {
+            String opcionConversion = selectOptions(opciones,"Seleccione una opción de conversión" );
 
-        case "Conversor de Moneda":
+            double valueToConvert = 0.0;
+            List<String> values = new ArrayList<>();
 
-          double amount = 0.0;
-          try {
-            amount = Input.getAmount("Ingrese la cantidad a convertir");
+            try {
+                valueToConvert = Input.getAmount("Ingrese la cantidad a convertir");
+            } catch (RuntimeException e) {
+                System.exit(0);
+            }
+            switch (opcionConversion) {
+                case "Conversor de Moneda":
+                    var selection = selectOptions(CURRENCYS, MESSAGE);
+                    values.add(CurrencyConverter.getSymbolToCurrency(selection));
+                    values.add(CurrencyConverter.convert(valueToConvert, selection));
+                    values.add(CurrencyConverter.getToCurrency(selection));
+                    Output.showResult(values);
+                    break;
+                case "Conversor de Peso":
+                    var selectionWeight = selectOptions(WEIGHTS, MESSAGE);
+                    values.add(String.valueOf(WeightConverter.convert(valueToConvert, selectionWeight)));
+                    values.add(CurrencyConverter.getToCurrency(selectionWeight));
+                    Output.showResult(values);
+                    break;
+                default:
+                    throw new IllegalStateException("Unexpected value: " + opcionConversion);
+            }
 
-          } catch (RuntimeException e) {
-            System.exit(0);
-          }
-          var selection = SelectionOptions.getdata(CURRENCYS, "Seleccione la moneda de origen y destino");
-          var converter = new CurrencyConverter();
-          String convert = converter.convert(amount, selection);
-          String symbol = getSymbol(converter.getToCurrency(selection));
-          String destination = Arrays.stream(selection.split(" ")).skip(3).findFirst().orElse(null);
-          Output.showResult(convert, symbol, destination);
-          break;
+            continuar = (confirm("¿Desea continuar?"));
+        } while (continuar);
 
-        case "Conversor de Peso":
+        message("Programa Finalizado");
+    }
 
-          double weight = 0.0;
-          try {
-            weight = Input.getAmount("Ingrese el peso a convertir");
-          } catch (RuntimeException e) {
-            System.out.println("El usuario ha cancelado la entrada de datos.");
-            System.exit(0);
-          }
-          var selectionWeight = SelectionOptions.getdata(WEIGHTS, "Seleccione el peso de origen y destino");
-          double convertWeight1 = WeightConverter.convert(weight, selectionWeight);
-          String destinationWeight = Arrays.stream(selectionWeight.split(" ")).skip(3).findFirst().orElse(null);
-          Output.showResult(convertWeight1, destinationWeight);
-          break;
-      }
 
-      int opcion = JOptionPane.showConfirmDialog(null, "¿Desea continuar?",
-          "Select an Option", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null);
-      continuar = (opcion == JOptionPane.YES_OPTION);
-    } while (continuar);
+    public static String selectOptions(String[] values, String message) {
+        return SelectionOptions.getdata(values, message);
+    }
 
-    JOptionPane.showMessageDialog(null, "Programa Finalizado", "Mensaje", JOptionPane.INFORMATION_MESSAGE);
-  }
+    public static boolean confirm( String message) {
+        return SelectionOptions.confirm( message);
+    }
+
+    public static void message( String message) {
+         SelectionOptions.message( message);
+    }
 }
