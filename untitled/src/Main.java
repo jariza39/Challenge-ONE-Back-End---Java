@@ -19,9 +19,7 @@ public class Main {
         boolean continuar;
 
         do {
-            String opcionConversion = (String) JOptionPane.showInputDialog(null,
-                "Seleccione una opción de conversión", "Menu", JOptionPane.PLAIN_MESSAGE,
-                null, opciones, opciones[0]);
+            String opcionConversion = selectOptions(opciones,"Seleccione una opción de conversión" );
 
             double valueToConvert = 0.0;
             List<String> values = new ArrayList<>();
@@ -48,9 +46,8 @@ public class Main {
                 default:
                     throw new IllegalStateException("Unexpected value: " + opcionConversion);
             }
-            int opcion = JOptionPane.showConfirmDialog(null, "¿Desea continuar?",
-                "Select an Option", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null);
-            continuar = (opcion == JOptionPane.YES_OPTION);
+
+            continuar = (confirm("¿Desea continuar?") == JOptionPane.YES_OPTION);
         } while (continuar);
 
         JOptionPane.showMessageDialog(null, "Programa Finalizado", "Mensaje", JOptionPane.INFORMATION_MESSAGE);
@@ -59,5 +56,10 @@ public class Main {
 
     public static String selectOptions(String[] values, String message) {
         return SelectionOptions.getdata(values, message);
+    }
+
+
+    public static int confirm( String message) {
+        return SelectionOptions.confirm( message);
     }
 }
